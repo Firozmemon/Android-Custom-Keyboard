@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+          android:horizontalGap="0px"
+          android:verticalGap="0px" android:keyHeight="45dip">
+
+    <Row>
+        <Key android:codes="-105" android:keyOutputText='க' android:keyLabel="க" android:keyEdgeFlags="left"/>
+        <Key android:codes="-105" android:keyOutputText='த' android:keyLabel="த"/>
+        <Key android:codes="-105" android:keyOutputText='ல' android:keyLabel="ல"/>
+        <Key android:codes="-105" android:keyOutputText='ங' android:keyLabel="ங"/>
+        <Key android:codes="-105" android:keyOutputText='ந' android:keyLabel="ந"/>
+        <Key android:codes="-105" android:keyOutputText='வ' android:keyLabel="வ"/>
+        <Key android:codes="-105" android:keyOutputText='ச' android:keyLabel="ச"/>
+        <Key android:codes="-105" android:keyOutputText='ப' android:keyLabel="ப"/>
+        <Key android:codes="-105" android:keyOutputText='ழ' android:keyLabel="ழ"/>
+        <Key android:codes="-105" android:keyOutputText='ஞ' android:keyLabel="ஞ" android:keyEdgeFlags="right"/>
+    </Row>
+
+    <Row>
+        <Key android:codes="-105" android:keyOutputText='ம' android:keyLabel="ம" android:keyEdgeFlags="left"/>
+        <Key android:codes="-105" android:keyOutputText='ள' android:keyLabel="ள"/>
+        <Key android:codes="-105" android:keyOutputText='ட' android:keyLabel="ட"/>
+        <Key android:codes="-105" android:keyOutputText='ய' android:keyLabel="ய"/>
+        <Key android:codes="-105" android:keyOutputText='ற' android:keyLabel="ற"/>
+        <Key android:codes="-105" android:keyOutputText='ண' android:keyLabel="ண"/>
+        <Key android:codes="-105" android:keyOutputText='ர' android:keyLabel="ர"/>
+        <Key android:codes="-105" android:keyOutputText='ன' android:keyLabel="ன"/>
+        <Key android:codes="-105" android:keyOutputText='ஹ' android:keyLabel="ஹ"/>
+        <Key android:codes="-105" android:keyOutputText='ஜ' android:keyLabel="ஜ" android:keyEdgeFlags="right"/>
+    </Row>
+
+    <Row>
+        <Key android:codes="-105" android:keyOutputText='ஸ' android:keyLabel="ஸ" android:keyEdgeFlags="left"/>
+        <Key android:codes="-105" android:keyOutputText='ஷ' android:keyLabel="ஷ"/>
+        <Key android:codes="-105" android:keyOutputText='்' android:keyLabel="்"/>
+        <Key android:codes="-105" android:keyOutputText='+' android:keyLabel="+"/>
+        <Key android:codes="-105" android:keyOutputText='*' android:keyLabel="*"/>
+        <Key android:codes="-105" android:keyOutputText='_' android:keyLabel="_"/>
+        <Key android:codes="-105" android:keyOutputText='=' android:keyLabel="="/>
+        <Key android:codes="-105" android:keyOutputText='\?' android:keyLabel="\?"/>
+        <Key android:codes="-105" android:keyOutputText='.' android:keyLabel="."/>
+        <Key android:codes="-105" android:keyOutputText='-' android:keyLabel="-"
+             android:keyEdgeFlags="right"/>
+    </Row>
+
+    <Row>
+        <Key android:codes="-114" android:keyLabel="⇧" android:keyEdgeFlags="left"/>
+        <Key android:codes="-105" android:keyOutputText='ா' android:keyLabel="ா"/>
+        <Key android:codes="-105" android:keyOutputText='ி' android:keyLabel="ி"/>
+        <Key android:codes="-105" android:keyOutputText='ீ' android:keyLabel="ீ"/>
+        <Key android:codes="-105" android:keyOutputText='ு' android:keyLabel="ு"/>
+        <Key android:codes="-105" android:keyOutputText='ூ' android:keyLabel="ூ"/>
+        <Key android:codes="-105" android:keyOutputText='ெ' android:keyLabel="ெ"/>
+        <Key android:codes="-105" android:keyOutputText='ே' android:keyLabel="ே"/>
+        <Key android:codes="-105" android:keyOutputText='ை' android:keyLabel="ை"/>
+        <Key android:codes="67" android:keyLabel="←" android:isRepeatable="true" android:keyEdgeFlags="right"/>
+    </Row>
+
+    <Row>
+        <Key android:codes="-105" android:keyOutputText='ொ' android:keyLabel="ொ" android:keyWidth="20%p" android:keyEdgeFlags="left"/>
+        <Key android:codes="-105" android:keyOutputText='ோ' android:keyLabel="ோ" android:keyWidth="20%p" />
+        <Key android:codes="-105" android:keyOutputText=' ' android:keyLabel=" "
+             android:keyWidth="20%p" android:isRepeatable="true"/>
+        <Key android:codes="-105" android:keyOutputText='ௌ' android:keyLabel="ௌ"
+             android:keyWidth="20%p" />
+        <Key android:codes="-114" android:keyLabel="௧௨௩"/>
+        <Key android:codes="66" android:keyLabel="↵" android:keyEdgeFlags="right"/>
+
+    </Row>
+
+</Keyboard>

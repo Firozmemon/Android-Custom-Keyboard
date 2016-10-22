@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+          android:horizontalGap="0px"
+          android:verticalGap="0px" android:keyHeight="45dip">
+
+    <Row>
+        <Key android:codes="-105" android:keyOutputText='೧' android:keyLabel="೧" android:keyEdgeFlags="left"/>
+        <Key android:codes="-105" android:keyOutputText='೨' android:keyLabel="೨"/>
+        <Key android:codes="-105" android:keyOutputText='೩' android:keyLabel="೩"/>
+        <Key android:codes="-105" android:keyOutputText='೪' android:keyLabel="೪"/>
+        <Key android:codes="-105" android:keyOutputText='೫' android:keyLabel="೫"/>
+        <Key android:codes="-105" android:keyOutputText='೬' android:keyLabel="೬"/>
+        <Key android:codes="-105" android:keyOutputText='೭' android:keyLabel="೭"/>
+        <Key android:codes="-105" android:keyOutputText='೮' android:keyLabel="೮"/>
+        <Key android:codes="-105" android:keyOutputText='೯' android:keyLabel="೯"/>
+        <Key android:codes="-105" android:keyOutputText='೦' android:keyLabel="೦" android:keyEdgeFlags="right"/>
+    </Row>
+
+    <Row>
+        <Key android:codes="-105" android:keyOutputText='ಅ' android:keyLabel="ಅ" android:keyEdgeFlags="left"/>
+        <Key android:codes="-105" android:keyOutputText='ಆ' android:keyLabel="ಆ"/>
+        <Key android:codes="-105" android:keyOutputText='ಇ' android:keyLabel="ಇ"/>
+        <Key android:codes="-105" android:keyOutputText='ಈ' android:keyLabel="ಈ"/>
+        <Key android:codes="-105" android:keyOutputText='ಉ' android:keyLabel="ಉ"/>
+        <Key android:codes="-105" android:keyOutputText='ಊ' android:keyLabel="ಊ"/>
+        <Key android:codes="-105" android:keyOutputText='ಎ' android:keyLabel="ಎ"/>
+        <Key android:codes="-105" android:keyOutputText='ಏ' android:keyLabel="ಏ"/>
+        <Key android:codes="-105" android:keyOutputText='ಐ' android:keyLabel="ಐ"/>
+        <Key android:codes="-105" android:keyOutputText='ಒ' android:keyLabel="ಒ" android:keyEdgeFlags="right"/>
+    </Row>
+
+    <Row>
+        <Key android:codes="-105" android:keyOutputText='ಓ' android:keyLabel="ಓ" android:keyEdgeFlags="left"/>
+        <Key android:codes="-105" android:keyOutputText='ಔ' android:keyLabel="ಔ"/>
+        <Key android:codes="-105" android:keyOutputText='ಷ' android:keyLabel="ಷ"/>
+        <Key android:codes="-105" android:keyOutputText='ಸ' android:keyLabel="ಸ"/>
+        <Key android:codes="-105" android:keyOutputText='ಹ' android:keyLabel="ಹ"/>
+        <Key android:codes="-105" android:keyOutputText='ಳ' android:keyLabel="ಳ"/>
+        <Key android:codes="-105" android:keyOutputText='ಋ' android:keyLabel="ಋ"/>
+        <Key android:codes="-105" android:keyOutputText='ೠ' android:keyLabel="ೠ"/>
+        <Key android:codes="-105" android:keyOutputText='\?' android:keyLabel="\?"/>
+        <Key android:codes="-105" android:keyOutputText='.' android:keyLabel="."
+             android:keyEdgeFlags="right"/>
+    </Row>
+
+    <Row>
+        <Key android:codes="-113" android:keyLabel="⇧" android:keyEdgeFlags="left"/>
+        <Key android:codes="-105" android:keyOutputText='ಾ' android:keyLabel="ಾ"/>
+        <Key android:codes="-105" android:keyOutputText='ಿ' android:keyLabel="ಿ"/>
+        <Key android:codes="-105" android:keyOutputText='ೀ' android:keyLabel="ೀ"/>
+        <Key android:codes="-105" android:keyOutputText='ು' android:keyLabel="ು"/>
+        <Key android:codes="-105" android:keyOutputText='ೂ' android:keyLabel="ೂ"/>
+        <Key android:codes="-105" android:keyOutputText='ೆ' android:keyLabel="ೆ"/>
+        <Key android:codes="-105" android:keyOutputText='ೇ' android:keyLabel="ೇ"/>
+        <Key android:codes="-105" android:keyOutputText='ೈ' android:keyLabel="ೈ"/>
+        <Key android:codes="67" android:keyLabel="←" android:isRepeatable="true" android:keyEdgeFlags="right"/>
+    </Row>
+
+    <Row>
+        <Key android:codes="-105" android:keyOutputText='ಂ' android:keyLabel="ಂ" android:keyEdgeFlags="left"/>
+        <Key android:codes="-105" android:keyOutputText='ಃ' android:keyLabel="ಃ"/>
+        <Key android:codes="-105" android:keyOutputText='ೊ' android:keyLabel="ೊ"/>
+        <Key android:codes="-105" android:keyOutputText='ೋ' android:keyLabel="ೋ"/>
+        <Key android:codes="-105" android:keyOutputText=' ' android:keyLabel=" "
+             android:keyWidth="20%p" android:isRepeatable="true"/>
+        <Key android:codes="-105" android:keyOutputText='ೌ' android:keyLabel="ೌ"/>
+        <Key android:codes="-105" android:keyOutputText='್' android:keyLabel="್"/>
+        <Key android:codes="-113" android:keyLabel="ಕಖ"/>
+        <Key android:codes="66" android:keyLabel="↵" android:keyEdgeFlags="right"/>
+
+    </Row>
+
+</Keyboard>

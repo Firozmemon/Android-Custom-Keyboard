@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Custom Keyboard</string>
+
+    <string-array name="switchLangArr">
+        <item>Default</item>
+        <item>Hindi</item>
+        <item>Gujarati</item>
+        <item>Marathi</item>
+        <item>Kannada</item>
+        <item>Tamil</item>
+        <item>Punjabi</item>
+    </string-array>
+</resources>
