@@ -5,6 +5,7 @@
 .DS_Store
 /build
 /captures
+/gradle
 *.iml
 .idea
 /app/build

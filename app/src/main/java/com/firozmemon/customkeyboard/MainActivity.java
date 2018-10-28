@@ -20,9 +20,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Layout;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -59,10 +59,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        messageInputLayout = (TextInputLayout) findViewById(R.id.messageInputLayout);
-        messageEditText = (EditText) findViewById(R.id.messageEditText);
-        switchLang = (Spinner)findViewById(R.id.switchLang);
-        mKeyboardView = (CustomKeyboardView)findViewById(R.id.keyboardView);
+        messageInputLayout = findViewById(R.id.messageInputLayout);
+        messageEditText = findViewById(R.id.messageEditText);
+        switchLang = findViewById(R.id.switchLang);
+        mKeyboardView = findViewById(R.id.keyboardView);
 
         langAdapter = ArrayAdapter.createFromResource(this, R.array.switchLangArr, android.R.layout.simple_spinner_item);
         langAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                /* no-op */
             }
         });
 
@@ -257,46 +257,48 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void swipeUp() {
-            // TODO Auto-generated method stub
-
+            /* no-op */
         }
 
         @Override
         public void swipeRight() {
-            // TODO Auto-generated method stub
-
+            /* no-op */
         }
 
         @Override
         public void swipeLeft() {
-            // TODO Auto-generated method stub
-
+            /* no-op */
         }
 
         @Override
         public void swipeDown() {
-            // TODO Auto-generated method stub
-
+            /* no-op */
         }
 
         @Override
         public void onText(CharSequence text) {
-            // TODO Auto-generated method stub
             int cursorPosition = editText.getSelectionEnd();
-            String before = editText.getText().toString().substring(0, cursorPosition);
-            String after = editText.getText().toString().substring(cursorPosition);
+            String previousText = editText.getText().toString();
+            String before, after;
+            if (cursorPosition < previousText.length()) {
+                before = previousText.substring(0, cursorPosition);
+                after = previousText.substring(cursorPosition);
+            } else {
+                before = previousText;
+                after = "";
+            }
             editText.setText(before + text + after);
             editText.setSelection(cursorPosition + 1);
         }
 
         @Override
         public void onRelease(int primaryCode) {
-            // TODO Auto-generated method stub
+            /* no-op */
         }
 
         @Override
         public void onPress(int primaryCode) {
-            // TODO Auto-generated method stub
+            /* no-op */
         }
 
         @Override

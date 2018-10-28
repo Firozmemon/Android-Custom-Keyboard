@@ -5,7 +5,7 @@ This is a simple example of creating Custom KeyboardView for Multi-Lingual Keybo
 I have referred sample project available on github at: https://github.com/rciovati/Android-KeyboardView-Example
 
 ## Sample App
-[![Get it on Google Play](http://www.android.com/images/brand/get_it_on_play_logo_small.png)](https://play.google.com/store/apps/details?id=com.firozmemon.customkeyboard)
+[![Get it on Google Play](https://play.google.com/intl/en_us/badges/images/badge_new.png)](https://play.google.com/store/apps/details?id=com.firozmemon.customkeyboard)
 
 ### Keyboard Languages available in App
 - Default (Default Keyboard)

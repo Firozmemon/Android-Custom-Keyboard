@@ -38,14 +38,12 @@ public class CustomKeyboardView extends KeyboardView
 
 			@Override
 			public void onAnimationStart(Animation animation) {
-				// TODO Auto-generated method stub
-
+				/* no-op */
 			}
 
 			@Override
 			public void onAnimationRepeat(Animation animation) {
-				// TODO Auto-generated method stub
-
+				/* no-op */
 			}
 
 			@Override
