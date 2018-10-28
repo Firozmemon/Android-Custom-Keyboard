@@ -33,34 +33,55 @@
             android:id="@+id/messageEditText"
             android:layout_width="match_parent"
             android:layout_height="125dp"
-            android:maxLines="5"
-            android:scrollbars="vertical"
             android:clickable="true"
-            android:gravity="left|top"
-            android:inputType="textMultiLine"
             android:ems="10"
-            android:hint="Compose your message" />
+            android:gravity="left|top"
+            android:hint="Compose your message"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:scrollbars="vertical" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/messageInputLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/messageInputLayout"
+        android:layout_marginTop="15dp"
+        android:editable="false">
+
+        <EditText
+            android:id="@+id/messageEditText1"
+            android:layout_width="match_parent"
+            android:layout_height="125dp"
+            android:clickable="true"
+            android:ems="10"
+            android:gravity="left|top"
+            android:hint="Compose your message"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:scrollbars="vertical" />
     </android.support.design.widget.TextInputLayout>
 
     <TextView
         android:id="@+id/keyboardTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/messageInputLayout"
+        android:layout_below="@+id/messageInputLayout1"
         android:layout_marginTop="5dp"
-        android:text="Select Keyboard"/>
+        android:text="Select Keyboard" />
 
     <Spinner
         android:id="@+id/switchLang"
-        android:layout_below="@+id/keyboardTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"/>
+        android:layout_below="@+id/keyboardTextView"
+        android:layout_marginTop="5dp" />
 
     <com.firozmemon.customkeyboard.CustomKeyboardView
         android:id="@+id/keyboardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </RelativeLayout>

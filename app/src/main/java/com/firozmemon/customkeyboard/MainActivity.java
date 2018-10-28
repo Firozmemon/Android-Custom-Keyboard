@@ -41,7 +41,7 @@ import android.widget.Spinner;
 public class MainActivity extends AppCompatActivity {
 
     TextInputLayout messageInputLayout;
-    EditText messageEditText;
+    EditText messageEditText, messageEditText1;
     Spinner switchLang;
     CustomKeyboardView mKeyboardView;
 
@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         InputMethodManager inputMethodManager =
                 (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(messageEditText.getWindowToken(), 0);
+        inputMethodManager.hideSoftInputFromWindow(messageEditText1.getWindowToken(), 0);
     }
 
     @Override
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
         messageInputLayout = findViewById(R.id.messageInputLayout);
         messageEditText = findViewById(R.id.messageEditText);
+        messageEditText1 = findViewById(R.id.messageEditText1);
         switchLang = findViewById(R.id.switchLang);
         mKeyboardView = findViewById(R.id.keyboardView);
 
@@ -83,6 +85,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Initializing KeyboardView for first EditText
+        mKeyboardView.setOnKeyboardActionListener(new BasicOnKeyboardActionListener(
+                MainActivity.this,
+                messageEditText,
+                mKeyboardView));
+
+
         /**
          * If User clicks outside the Edittext block
          * then hide keyboard
@@ -90,7 +99,21 @@ public class MainActivity extends AppCompatActivity {
         messageEditText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (v.getId() == R.id.messageEditText) {
+                if (v.getId() == R.id.messageEditText || v.getId() == R.id.messageEditText1) {
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                        case MotionEvent.ACTION_UP:
+                            v.getParent().requestDisallowInterceptTouchEvent(false);
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
+        messageEditText1.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (v.getId() == R.id.messageEditText || v.getId() == R.id.messageEditText1) {
                     v.getParent().requestDisallowInterceptTouchEvent(true);
                     switch (event.getAction() & MotionEvent.ACTION_MASK) {
                         case MotionEvent.ACTION_UP:
@@ -143,7 +166,9 @@ public class MainActivity extends AppCompatActivity {
                     InputMethodManager imm =
                             (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(messageEditText, 0);
+                    imm.showSoftInput(messageEditText1, 0);
                     messageEditText.setOnTouchListener(null);
+                    messageEditText1.setOnTouchListener(null);
                 }
             } else if (switchLang.getSelectedItemPosition() == 3) {
                 mKeyboard =
@@ -185,18 +210,20 @@ public class MainActivity extends AppCompatActivity {
                     InputMethodManager imm =
                             (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(messageEditText, 0);
+                    imm.showSoftInput(messageEditText1, 0);
                     messageEditText.setOnTouchListener(null);
+                    messageEditText1.setOnTouchListener(null);
                 }
             }
-
-            mKeyboardView.setOnKeyboardActionListener(new BasicOnKeyboardActionListener(
-                    MainActivity.this,
-                    messageEditText,
-                    mKeyboardView));
 
             messageEditText.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
+                    messageEditText.requestFocus();
+                    mKeyboardView.setOnKeyboardActionListener(new BasicOnKeyboardActionListener(
+                            MainActivity.this,
+                            messageEditText,
+                            mKeyboardView));
                     selectKeyboard();
 
                     switch (event.getAction()) {
@@ -220,6 +247,37 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
             });
+
+            messageEditText1.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    messageEditText1.requestFocus();
+                    mKeyboardView.setOnKeyboardActionListener(new BasicOnKeyboardActionListener(
+                            MainActivity.this,
+                            messageEditText1,
+                            mKeyboardView));
+                    selectKeyboard();
+
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_UP:
+                            Layout layout = ((EditText) v).getLayout();
+                            float x = event.getX() + messageEditText1.getScrollX();
+                            float y = event.getY() + messageEditText1.getScrollY();
+                            int line = layout.getLineForVertical((int) y);
+
+                            int offset = layout.getOffsetForHorizontal(line, x);
+                            if (offset > 0)
+                                if (x > layout.getLineMax(0))
+                                    messageEditText1.setSelection(offset);     // touch was at end of text
+                                else
+                                    messageEditText1.setSelection(offset - 1);
+
+                            messageEditText1.setCursorVisible(true);
+                            break;
+                    }
+                    return true;
+                }
+            });
         } else {
             mKeyboardView.setVisibility(View.GONE);
 
@@ -227,7 +285,9 @@ public class MainActivity extends AppCompatActivity {
             InputMethodManager imm =
                     (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(messageEditText, 0);
+            imm.showSoftInput(messageEditText1, 0);
             messageEditText.setOnTouchListener(null);
+            messageEditText1.setOnTouchListener(null);
         }
     }
 
@@ -248,8 +308,7 @@ public class MainActivity extends AppCompatActivity {
         private Activity mTargetActivity;
 
         public BasicOnKeyboardActionListener(Activity targetActivity, EditText editText,
-                                             CustomKeyboardView
-                                                     displayKeyboardView) {
+                                             CustomKeyboardView displayKeyboardView) {
             mTargetActivity = targetActivity;
             this.editText = editText;
             this.displayKeyboardView = displayKeyboardView;
