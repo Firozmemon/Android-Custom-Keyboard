@@ -17,11 +17,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdk 34
     namespace "com.firozmemon.customkeyboard"
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 28
+        targetSdkVersion 34
         versionCode 2
         versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -43,4 +43,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
     implementation 'com.android.support:design:28.0.0'
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
