@@ -1,6 +1,6 @@
 # Android-Custom-Keyboard
 
-This is a simple example of creating Custom KeyboardView for Multi-Lingual Keyboards in Android.
+This is a simple example of creating In-App Custom KeyboardView for Multi-Lingual Keyboards in Android.
 
 I have referred sample project available on github at: https://github.com/rciovati/Android-KeyboardView-Example
 
