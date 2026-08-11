@@ -16,6 +16,8 @@
 
 <resources>
     <string name="app_name">Custom Keyboard</string>
+    <string name="compose_message_hint">Compose your message</string>
+    <string name="select_keyboard">Select Keyboard</string>
 
     <string-array name="switchLangArr">
         <item>Default</item>

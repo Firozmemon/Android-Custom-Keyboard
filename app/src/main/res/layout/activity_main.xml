@@ -22,25 +22,24 @@
     android:layout_height="match_parent"
     tools:context="com.firozmemon.customkeyboard.MainActivity">
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/messageInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:editable="false">
+        android:hint="@string/compose_message_hint">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/messageEditText"
             android:layout_width="match_parent"
             android:layout_height="125dp"
             android:maxLines="5"
             android:scrollbars="vertical"
             android:clickable="true"
-            android:gravity="left|top"
+            android:gravity="start|top"
             android:inputType="textMultiLine"
-            android:ems="10"
-            android:hint="Compose your message" />
-    </android.support.design.widget.TextInputLayout>
+            android:ems="10" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/keyboardTextView"
@@ -48,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/messageInputLayout"
         android:layout_marginTop="5dp"
-        android:text="Select Keyboard"/>
+        android:text="@string/select_keyboard"/>
 
     <Spinner
         android:id="@+id/switchLang"
