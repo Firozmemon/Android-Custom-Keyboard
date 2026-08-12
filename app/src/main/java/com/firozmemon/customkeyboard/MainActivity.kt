@@ -95,18 +95,17 @@ class MainActivity : AppCompatActivity() {
             if (event.action == MotionEvent.ACTION_UP) {
                 showCustomKeyboard()
 
-                val layout = (v as EditText).layout
-                val x = event.x + messageEditText.scrollX
-                val y = event.y + messageEditText.scrollY
-                val line = layout.getLineForVertical(y.toInt())
-
-                val offset = layout.getOffsetForHorizontal(line, x)
-                if (offset > 0) {
-                    if (x > layout.getLineMax(0)) {
-                        messageEditText.setSelection(offset)     // touch was at end of text
-                    } else {
-                        messageEditText.setSelection(offset - 1)
-                    }
+                /*
+                 * This listener consumes the event, so the EditText never gets
+                 * to place the caret itself. getOffsetForPosition() is the
+                 * framework's own hit-testing and accounts for padding, scroll
+                 * and the line actually touched - the arithmetic that used to
+                 * live here got all three wrong.
+                 */
+                val field = v as EditText
+                val offset = field.getOffsetForPosition(event.x, event.y)
+                if (offset >= 0) {
+                    field.setSelection(offset)
                 }
             }
             true
