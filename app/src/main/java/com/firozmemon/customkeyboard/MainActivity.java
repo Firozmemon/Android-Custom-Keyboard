@@ -125,10 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Neither of these ever changes, so they do not belong in selectKeyboard()
         mKeyboardView.setPreviewEnabled(false);   // no preview balloons
-        mKeyboardView.setOnKeyboardActionListener(new BasicOnKeyboardActionListener(
-                MainActivity.this,
-                messageEditText,
-                mKeyboardView));
+        mKeyboardView.setOnKeyboardActionListener(new BasicOnKeyboardActionListener());
 
         ArrayAdapter<CharSequence> langAdapter = ArrayAdapter.createFromResource(this, R.array.switchLangArr, android.R.layout.simple_spinner_item);
         langAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -344,18 +341,6 @@ public class MainActivity extends AppCompatActivity {
 
     public class BasicOnKeyboardActionListener implements KeyboardView.OnKeyboardActionListener {
 
-        EditText editText;
-        CustomKeyboardView displayKeyboardView;
-        private Activity mTargetActivity;
-
-        public BasicOnKeyboardActionListener(Activity targetActivity, EditText editText,
-                                             CustomKeyboardView
-                                                     displayKeyboardView) {
-            mTargetActivity = targetActivity;
-            this.editText = editText;
-            this.displayKeyboardView = displayKeyboardView;
-        }
-
         @Override
         public void swipeUp() {
             /* no-op */
@@ -384,9 +369,9 @@ public class MainActivity extends AppCompatActivity {
              * thing twice per keystroke and discarded the Editable, and the
              * old caret arithmetic assumed every key emits one character.
              */
-            Editable content = editText.getText();
-            int start = editText.getSelectionStart();
-            int end = editText.getSelectionEnd();
+            Editable content = messageEditText.getText();
+            int start = messageEditText.getSelectionStart();
+            int end = messageEditText.getSelectionEnd();
 
             if (start < 0 || end < 0) {         // nothing focused yet, append
                 start = end = content.length();
@@ -397,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             content.replace(start, end, text);
-            editText.setSelection(start + text.length());
+            messageEditText.setSelection(start + text.length());
         }
 
         @Override
@@ -420,12 +405,12 @@ public class MainActivity extends AppCompatActivity {
                             new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, primaryCode, 0, 0, 0, 0,
                                     KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE);
 
-                    mTargetActivity.dispatchKeyEvent(event);
+                    MainActivity.this.dispatchKeyEvent(event);
                     break;
                 default:
                     int layout = LAYER_FOR_KEYCODE.get(primaryCode);
                     if (layout != 0) {
-                        displayKeyboardView.setKeyboard(keyboardFor(layout));
+                        mKeyboardView.setKeyboard(keyboardFor(layout));
                     }
                     break;
             }
