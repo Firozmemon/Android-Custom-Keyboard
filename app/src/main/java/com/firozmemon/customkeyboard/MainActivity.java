@@ -21,6 +21,7 @@ import android.content.Context;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Layout;
 import android.util.SparseArray;
 import android.view.KeyEvent;
@@ -347,18 +348,26 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onText(CharSequence text) {
-            int cursorPosition = editText.getSelectionEnd();
-            String previousText = editText.getText().toString();
-            String before, after;
-            if (cursorPosition < previousText.length()) {
-                before = previousText.substring(0, cursorPosition);
-                after = previousText.substring(cursorPosition);
-            } else {
-                before = previousText;
-                after = "";
+            /*
+             * Editable.replace() edits in place. Rebuilding the message as a
+             * String and handing it back through setText() copied the whole
+             * thing twice per keystroke and discarded the Editable, and the
+             * old caret arithmetic assumed every key emits one character.
+             */
+            Editable content = editText.getText();
+            int start = editText.getSelectionStart();
+            int end = editText.getSelectionEnd();
+
+            if (start < 0 || end < 0) {         // nothing focused yet, append
+                start = end = content.length();
+            } else if (start > end) {           // selected right to left
+                int swap = start;
+                start = end;
+                end = swap;
             }
-            editText.setText(before + text + after);
-            editText.setSelection(cursorPosition + 1);
+
+            content.replace(start, end, text);
+            editText.setSelection(start + text.length());
         }
 
         @Override
