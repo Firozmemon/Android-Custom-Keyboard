@@ -33,9 +33,31 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled = false
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    packaging {
+        resources {
+            /*
+             * Kotlin runtime metadata arrives from the AndroidX modules that
+             * are written in Kotlin. Nothing here is Kotlin and nothing reads
+             * it at runtime, so it is dead weight in the APK.
+             */
+            excludes += ["kotlin/**", "META-INF/*.version", "DebugProbesKt.bin"]
+        }
+    }
+
+    androidResources {
+        /*
+         * AppCompat and Material ship their system strings in ~80 locales,
+         * which is most of resources.arsc. Keep English plus the languages
+         * this keyboard actually types, so users running their phone in one
+         * of those still get localised framework strings.
+         */
+        localeFilters += ["en", "hi", "gu", "mr", "kn", "ta", "pa"]
     }
 
     compileOptions {
