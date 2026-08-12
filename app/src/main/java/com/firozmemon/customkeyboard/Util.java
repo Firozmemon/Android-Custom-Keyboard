@@ -27,15 +27,36 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by firoz
  */
 public class Util {
+    /**
+     * Probing a language costs two 200x80 ARGB_8888 bitmaps and a full pixel
+     * comparison. Which scripts the device can render cannot change while the
+     * process is alive, so each answer is only worked out once.
+     */
+    private static final Map<String, Boolean> LANG_SUPPORT_CACHE = new HashMap<>();
+
     private Util() {
 
     }
 
     public static boolean isLangSupported(Context context, String text) {
+        Boolean cached = LANG_SUPPORT_CACHE.get(text);
+        if (cached != null) {
+            return cached;
+        }
+
+        boolean supported = probeLangSupport(context, text);
+        LANG_SUPPORT_CACHE.put(text, supported);
+        return supported;
+    }
+
+    private static boolean probeLangSupport(Context context, String text) {
         int sdk = android.os.Build.VERSION.SDK_INT;
         int w = 200, h = 80;
         Resources resources = context.getResources();
