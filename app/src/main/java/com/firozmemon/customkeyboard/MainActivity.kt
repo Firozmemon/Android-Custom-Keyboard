@@ -144,9 +144,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun selectKeyboard() {
-        val position = switchLang.selectedItemPosition
+        // position 0 is the device's own keyboard, and has no entry
+        val language = LANGUAGES.getOrNull(switchLang.selectedItemPosition - 1)
 
-        if (position <= 0 || position >= LAYOUT_FOR_POSITION.size) {
+        if (language == null) {
             mKeyboardView.visibility = View.GONE
 
             //Show Default Keyboard
@@ -158,8 +159,8 @@ class MainActivity : AppCompatActivity() {
          * Without the font the keys draw as tofu and the keyboard is unusable,
          * so hand back to the device's own rather than show it.
          */
-        if (!canRenderScript(position)) {
-            showUnsupportedAlert(LANGUAGE_NAME[position].orEmpty())
+        if (!glyphProbe.hasGlyph(language.probeChar)) {
+            showUnsupportedAlert(language.name)
 
             //Reset language selection
             switchLang.setSelection(0)
@@ -175,19 +176,9 @@ class MainActivity : AppCompatActivity() {
 
         showKeyboardWithAnimation()
         mKeyboardView.visibility = View.VISIBLE
-        mKeyboardView.keyboard = keyboardFor(LAYOUT_FOR_POSITION[position])
+        mKeyboardView.keyboard = keyboardFor(language.mainLayout)
 
         messageEditText.setOnTouchListener(customKeyboardTouchListener)
-    }
-
-    /**
-     * Whether the device can actually draw this script. Paint.hasGlyph() checks
-     * the font directly, so unlike drawing to a bitmap and looking for pixels it
-     * can tell a real letter from the tofu box drawn in its place.
-     */
-    private fun canRenderScript(position: Int): Boolean {
-        val probe = PROBE_CHAR[position]
-        return probe == null || glyphProbe.hasGlyph(probe)
     }
 
     private fun showUnsupportedAlert(language: String) {
@@ -335,57 +326,47 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Everything that varies between the keyboards, in one row each.
+     *
+     * @param probeChar a single base letter of the script, used to check the
+     *   device can draw it. Deliberately one character: hasGlyph() asks whether
+     *   the whole string maps to one glyph, so a word answers false even where
+     *   the script renders perfectly well. Checking the font directly is what
+     *   distinguishes a real letter from the tofu box drawn in its place.
+     */
+    private data class Language(
+        val name: String,
+        val mainLayout: Int,
+        val altLayout: Int,
+        val toAltKeyCode: Int,
+        val toMainKeyCode: Int,
+        val probeChar: String,
+    )
+
     companion object {
         /**
-         * Indexed by the spinner position, where 0 is the device's own keyboard and
-         * so has no layout of its own. Keep in step with R.array.switchLangArr.
+         * One row per spinner position after Default, in the order
+         * R.array.switchLangArr lists them.
          */
-        private val LAYOUT_FOR_POSITION = intArrayOf(
-            0,
-            R.xml.kbd_hin1,
-            R.xml.kbd_guj1,
-            R.xml.kbd_mar1,
-            R.xml.kbd_knd1,
-            R.xml.kbd_tam1,
-            R.xml.kbd_punj1,
+        private val LANGUAGES = listOf(
+            Language("Hindi", R.xml.kbd_hin1, R.xml.kbd_hin2, -106, -107, "क"),   // U+0915 Devanagari ka
+            Language("Gujarati", R.xml.kbd_guj1, R.xml.kbd_guj2, -108, -109, "ક"),   // U+0A95 Gujarati ka
+            Language("Marathi", R.xml.kbd_mar1, R.xml.kbd_mar2, -110, -111, "क"),   // U+0915 Devanagari ka
+            Language("Kannada", R.xml.kbd_knd1, R.xml.kbd_knd2, -112, -113, "ಕ"),   // U+0C95 Kannada ka
+            Language("Tamil", R.xml.kbd_tam1, R.xml.kbd_tam2, -114, -115, "க"),   // U+0B95 Tamil ka
+            Language("Punjabi", R.xml.kbd_punj1, R.xml.kbd_punj2, -116, -117, "ਕ"),   // U+0A15 Gurmukhi ka
         )
 
         /**
-         * The layer-toggle keys (the shift and १२३ keys) carry these codes, one
-         * pair per language, and each one only has to swap in another layout.
+         * Derived so the toggle keys cannot drift out of step with the layouts
+         * they switch between.
          */
         private val LAYER_FOR_KEYCODE = SparseIntArray().apply {
-            put(-106, R.xml.kbd_hin2)
-            put(-107, R.xml.kbd_hin1)
-            put(-108, R.xml.kbd_guj2)
-            put(-109, R.xml.kbd_guj1)
-            put(-110, R.xml.kbd_mar2)
-            put(-111, R.xml.kbd_mar1)
-            put(-112, R.xml.kbd_knd2)
-            put(-113, R.xml.kbd_knd1)
-            put(-114, R.xml.kbd_tam2)
-            put(-115, R.xml.kbd_tam1)
-            put(-116, R.xml.kbd_punj2)
-            put(-117, R.xml.kbd_punj1)
+            LANGUAGES.forEach { language ->
+                put(language.toAltKeyCode, language.altLayout)
+                put(language.toMainKeyCode, language.mainLayout)
+            }
         }
-
-        private val LANGUAGE_NAME = arrayOf(
-            null, "Hindi", "Gujarati", "Marathi", "Kannada", "Tamil", "Punjabi",
-        )
-
-        /**
-         * One base letter per script. Deliberately a single character: hasGlyph()
-         * asks whether the whole string maps to one glyph, so a word answers false
-         * even on a device that renders the script perfectly well.
-         */
-        private val PROBE_CHAR = arrayOf(
-            null,
-            "क",   // U+0915 Devanagari ka - Hindi
-            "ક",   // U+0A95 Gujarati ka
-            "क",   // U+0915 Devanagari ka - Marathi
-            "ಕ",   // U+0C95 Kannada ka
-            "க",   // U+0B95 Tamil ka
-            "ਕ",   // U+0A15 Gurmukhi ka - Punjabi
-        )
     }
 }
