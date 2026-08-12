@@ -25,6 +25,7 @@ import android.text.Layout;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -137,7 +138,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mKeyboardView.setVisibility(View.GONE);
+
+        /**
+         * A selected language still owns the EditText after coming back from
+         * the background, so restore its keyboard rather than dropping the
+         * user onto the system one.
+         */
+        if (switchLang.getSelectedItemPosition() != 0) {
+            showCustomKeyboard();
+        } else {
+            mKeyboardView.setVisibility(View.GONE);
+        }
     }
 
     public void selectKeyboard() {
@@ -173,11 +184,7 @@ public class MainActivity extends AppCompatActivity {
                     mKeyboardView.setVisibility(View.GONE);
 
                     //Show Default Keyboard
-                    messageEditText.setShowSoftInputOnFocus(true);
-                    InputMethodManager imm =
-                            (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(messageEditText, 0);
-                    messageEditText.setOnTouchListener(null);
+                    showSystemKeyboard();
                 }
             } else if (switchLang.getSelectedItemPosition() == 3) {
                 mKeyboard =
@@ -216,11 +223,7 @@ public class MainActivity extends AppCompatActivity {
                     mKeyboardView.setVisibility(View.GONE);
 
                     //Show Default Keyboard
-                    messageEditText.setShowSoftInputOnFocus(true);
-                    InputMethodManager imm =
-                            (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(messageEditText, 0);
-                    messageEditText.setOnTouchListener(null);
+                    showSystemKeyboard();
                 }
             }
 
@@ -234,11 +237,7 @@ public class MainActivity extends AppCompatActivity {
             mKeyboardView.setVisibility(View.GONE);
 
             //Show Default Keyboard
-            messageEditText.setShowSoftInputOnFocus(true);
-            InputMethodManager imm =
-                    (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(messageEditText, 0);
-            messageEditText.setOnTouchListener(null);
+            showSystemKeyboard();
         }
     }
 
@@ -249,15 +248,37 @@ public class MainActivity extends AppCompatActivity {
      * Enter/Backspace.
      */
     private void focusForCustomKeyboard() {
+        /**
+         * setShowSoftInputOnFocus() only covers focus changes. The window
+         * restores the system keyboard on its own when the activity returns to
+         * the foreground with an editor focused, so it has to be told to stay
+         * hidden as well.
+         */
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         messageEditText.setShowSoftInputOnFocus(false);
         messageEditText.requestFocus();
         messageEditText.setCursorVisible(true);
     }
 
     /**
-     * Brings the already selected keyboard back after a touch, e.g. when
-     * onResume() has hidden it. Unlike selectKeyboard() this re-parses nothing,
-     * so it is cheap enough to run from a touch handler.
+     * Hands the EditText back to the system keyboard, undoing everything
+     * focusForCustomKeyboard() put in place.
+     */
+    private void showSystemKeyboard() {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED);
+
+        messageEditText.setShowSoftInputOnFocus(true);
+        InputMethodManager imm =
+                (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(messageEditText, 0);
+        messageEditText.setOnTouchListener(null);
+    }
+
+    /**
+     * Brings the already selected keyboard back, either after a touch or when
+     * returning from the background. Unlike selectKeyboard() this re-parses
+     * nothing, so it is cheap enough to run from a touch handler.
      */
     private void showCustomKeyboard() {
         hideSoftKeyboard(MainActivity.this);
