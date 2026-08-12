@@ -39,6 +39,17 @@ android {
         }
     }
 
+    packaging {
+        resources {
+            /*
+             * Kotlin runtime metadata arrives from the AndroidX modules that
+             * are written in Kotlin. Nothing here is Kotlin and nothing reads
+             * it at runtime, so it is dead weight in the APK.
+             */
+            excludes += ["kotlin/**", "META-INF/*.version", "DebugProbesKt.bin"]
+        }
+    }
+
     androidResources {
         /*
          * AppCompat and Material ship their system strings in ~80 locales,
