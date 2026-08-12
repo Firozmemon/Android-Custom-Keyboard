@@ -21,8 +21,6 @@ import android.content.Context;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -34,6 +32,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 /**
  * Created by firoz
@@ -117,6 +119,16 @@ public class MainActivity extends AppCompatActivity {
         if (switchLang.getSelectedItemPosition() != 0) {
             hideSoftKeyboard(MainActivity.this);
 
+            /**
+             * The custom keyboard drives the EditText, so keep the system
+             * keyboard from popping up on focus, but still give the EditText
+             * focus ourselves. Without focus the caret is never drawn and
+             * dispatchKeyEvent() has no target for Enter/Backspace.
+             */
+            messageEditText.setShowSoftInputOnFocus(false);
+            messageEditText.requestFocus();
+            messageEditText.setCursorVisible(true);
+
             if (switchLang.getSelectedItemPosition() == 1) {
                 mKeyboard = new Keyboard(MainActivity.this, R.xml
                         .kbd_hin1);
@@ -140,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                     mKeyboardView.setVisibility(View.GONE);
 
                     //Show Default Keyboard
+                    messageEditText.setShowSoftInputOnFocus(true);
                     InputMethodManager imm =
                             (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(messageEditText, 0);
@@ -182,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
                     mKeyboardView.setVisibility(View.GONE);
 
                     //Show Default Keyboard
+                    messageEditText.setShowSoftInputOnFocus(true);
                     InputMethodManager imm =
                             (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(messageEditText, 0);
@@ -224,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
             mKeyboardView.setVisibility(View.GONE);
 
             //Show Default Keyboard
+            messageEditText.setShowSoftInputOnFocus(true);
             InputMethodManager imm =
                     (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(messageEditText, 0);
