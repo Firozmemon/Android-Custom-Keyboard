@@ -38,20 +38,15 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.textfield.TextInputLayout;
-
 /**
  * Created by firoz
  */
 public class MainActivity extends AppCompatActivity {
 
-    TextInputLayout messageInputLayout;
     EditText messageEditText;
     Spinner switchLang;
     CustomKeyboardView mKeyboardView;
 
-    private Keyboard mKeyboard;
-    private ArrayAdapter<CharSequence> langAdapter;
     private View.OnTouchListener customKeyboardTouchListener;
     private final SparseArray<Keyboard> keyboardCache = new SparseArray<>();
 
@@ -90,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        messageInputLayout = findViewById(R.id.messageInputLayout);
         messageEditText = findViewById(R.id.messageEditText);
         switchLang = findViewById(R.id.switchLang);
         mKeyboardView = findViewById(R.id.keyboardView);
@@ -102,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 messageEditText,
                 mKeyboardView));
 
-        langAdapter = ArrayAdapter.createFromResource(this, R.array.switchLangArr, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> langAdapter = ArrayAdapter.createFromResource(this, R.array.switchLangArr, android.R.layout.simple_spinner_item);
         langAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         switchLang.setAdapter(langAdapter);
 
@@ -217,10 +211,9 @@ public class MainActivity extends AppCompatActivity {
         hideSoftKeyboard(MainActivity.this);
         focusForCustomKeyboard();
 
-        mKeyboard = keyboardFor(LAYOUT_FOR_POSITION[position]);
         showKeyboardWithAnimation();
         mKeyboardView.setVisibility(View.VISIBLE);
-        mKeyboardView.setKeyboard(mKeyboard);
+        mKeyboardView.setKeyboard(keyboardFor(LAYOUT_FOR_POSITION[position]));
 
         messageEditText.setOnTouchListener(customKeyboardTouchListener);
     }

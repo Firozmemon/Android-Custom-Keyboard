@@ -57,7 +57,6 @@ public class Util {
     }
 
     private static boolean probeLangSupport(Context context, String text) {
-        int sdk = android.os.Build.VERSION.SDK_INT;
         int w = 200, h = 80;
         Resources resources = context.getResources();
         float scale = resources.getDisplayMetrics().density;
@@ -76,12 +75,7 @@ public class Util {
         int y = (bitmap.getHeight() + bounds.height()) / 2;
 
         canvas.drawText(text, x, y, paint);
-        boolean res = false;
-        if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-            res = !(orig == bitmap);
-        } else {
-            res = !orig.sameAs(bitmap);
-        }
+        boolean res = !orig.sameAs(bitmap);
         orig.recycle();
         bitmap.recycle();
         return res;
