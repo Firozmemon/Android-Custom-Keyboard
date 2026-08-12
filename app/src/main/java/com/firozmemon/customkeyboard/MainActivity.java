@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Keyboard mKeyboard;
     private ArrayAdapter<CharSequence> langAdapter;
+    private View.OnTouchListener customKeyboardTouchListener;
 
     public void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager =
@@ -86,6 +87,34 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /**
+         * Placed on the EditText while a custom keyboard is active. Built once,
+         * because it only has to move the caret - the keyboard itself is
+         * already loaded by the time a touch can reach here.
+         */
+        customKeyboardTouchListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    showCustomKeyboard();
+
+                    Layout layout = ((EditText) v).getLayout();
+                    float x = event.getX() + messageEditText.getScrollX();
+                    float y = event.getY() + messageEditText.getScrollY();
+                    int line = layout.getLineForVertical((int) y);
+
+                    int offset = layout.getOffsetForHorizontal(line, x);
+                    if (offset > 0)
+                        if (x > layout.getLineMax(0))
+                            messageEditText
+                                    .setSelection(offset);     // touch was at end of text
+                        else
+                            messageEditText.setSelection(offset - 1);
+                }
+                return true;
+            }
+        };
+
+        /**
          * If User clicks outside the Edittext block
          * then hide keyboard
          */
@@ -119,15 +148,7 @@ public class MainActivity extends AppCompatActivity {
         if (switchLang.getSelectedItemPosition() != 0) {
             hideSoftKeyboard(MainActivity.this);
 
-            /**
-             * The custom keyboard drives the EditText, so keep the system
-             * keyboard from popping up on focus, but still give the EditText
-             * focus ourselves. Without focus the caret is never drawn and
-             * dispatchKeyEvent() has no target for Enter/Backspace.
-             */
-            messageEditText.setShowSoftInputOnFocus(false);
-            messageEditText.requestFocus();
-            messageEditText.setCursorVisible(true);
+            focusForCustomKeyboard();
 
             if (switchLang.getSelectedItemPosition() == 1) {
                 mKeyboard = new Keyboard(MainActivity.this, R.xml
@@ -208,32 +229,7 @@ public class MainActivity extends AppCompatActivity {
                     messageEditText,
                     mKeyboardView));
 
-            messageEditText.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    selectKeyboard();
-
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_UP:
-                            Layout layout = ((EditText) v).getLayout();
-                            float x = event.getX() + messageEditText.getScrollX();
-                            float y = event.getY() + messageEditText.getScrollY();
-                            int line = layout.getLineForVertical((int) y);
-
-                            int offset = layout.getOffsetForHorizontal(line, x);
-                            if (offset > 0)
-                                if (x > layout.getLineMax(0))
-                                    messageEditText
-                                            .setSelection(offset);     // touch was at end of text
-                                else
-                                    messageEditText.setSelection(offset - 1);
-
-                            messageEditText.setCursorVisible(true);
-                            break;
-                    }
-                    return true;
-                }
-            });
+            messageEditText.setOnTouchListener(customKeyboardTouchListener);
         } else {
             mKeyboardView.setVisibility(View.GONE);
 
@@ -244,6 +240,31 @@ public class MainActivity extends AppCompatActivity {
             imm.showSoftInput(messageEditText, 0);
             messageEditText.setOnTouchListener(null);
         }
+    }
+
+    /**
+     * The custom keyboard drives the EditText, so keep the system keyboard from
+     * popping up on focus, but still give the EditText focus ourselves. Without
+     * focus the caret is never drawn and dispatchKeyEvent() has no target for
+     * Enter/Backspace.
+     */
+    private void focusForCustomKeyboard() {
+        messageEditText.setShowSoftInputOnFocus(false);
+        messageEditText.requestFocus();
+        messageEditText.setCursorVisible(true);
+    }
+
+    /**
+     * Brings the already selected keyboard back after a touch, e.g. when
+     * onResume() has hidden it. Unlike selectKeyboard() this re-parses nothing,
+     * so it is cheap enough to run from a touch handler.
+     */
+    private void showCustomKeyboard() {
+        hideSoftKeyboard(MainActivity.this);
+        focusForCustomKeyboard();
+
+        showKeyboardWithAnimation();
+        mKeyboardView.setVisibility(View.VISIBLE);
     }
 
     private void showKeyboardWithAnimation() {
