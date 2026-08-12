@@ -22,6 +22,7 @@ import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private Keyboard mKeyboard;
     private ArrayAdapter<CharSequence> langAdapter;
     private View.OnTouchListener customKeyboardTouchListener;
+    private final SparseArray<Keyboard> keyboardCache = new SparseArray<>();
 
     public void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager =
@@ -162,15 +164,14 @@ public class MainActivity extends AppCompatActivity {
             focusForCustomKeyboard();
 
             if (switchLang.getSelectedItemPosition() == 1) {
-                mKeyboard = new Keyboard(MainActivity.this, R.xml
-                        .kbd_hin1);
+                mKeyboard = keyboardFor(R.xml.kbd_hin1);
                 showKeyboardWithAnimation();
                 mKeyboardView.setVisibility(View.VISIBLE);
                 mKeyboardView.setKeyboard(mKeyboard);
 
             } else if (switchLang.getSelectedItemPosition() == 2) {
                 if (Util.isLangSupported(MainActivity.this, "ગુજરાતી")) {
-                    mKeyboard = new Keyboard(MainActivity.this, R.xml.kbd_guj1);
+                    mKeyboard = keyboardFor(R.xml.kbd_guj1);
                     showKeyboardWithAnimation();
                     mKeyboardView.setVisibility(View.VISIBLE);
                     mKeyboardView.setKeyboard(mKeyboard);
@@ -179,8 +180,7 @@ public class MainActivity extends AppCompatActivity {
                             + "by your device");
                     //Reset language selection
                     switchLang.setSelection(0);
-                    mKeyboard = new Keyboard(MainActivity.this, R.xml
-                            .kbd_hin1);
+                    mKeyboard = keyboardFor(R.xml.kbd_hin1);
                     mKeyboardView.setVisibility(View.GONE);
 
                     //Show Default Keyboard
@@ -188,27 +188,25 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else if (switchLang.getSelectedItemPosition() == 3) {
                 mKeyboard =
-                        new Keyboard(MainActivity.this, R.xml.kbd_mar1);
+                        keyboardFor(R.xml.kbd_mar1);
                 showKeyboardWithAnimation();
                 mKeyboardView.setVisibility(View.VISIBLE);
                 mKeyboardView.setKeyboard(mKeyboard);
             } else if (switchLang.getSelectedItemPosition() == 4) {
                 mKeyboard =
-                        new Keyboard(MainActivity.this, R.xml.kbd_knd1);
+                        keyboardFor(R.xml.kbd_knd1);
                 showKeyboardWithAnimation();
                 mKeyboardView.setVisibility(View.VISIBLE);
                 mKeyboardView.setKeyboard(mKeyboard);
             } else if (switchLang.getSelectedItemPosition() == 5) {
-                mKeyboard = new Keyboard(MainActivity.this, R.xml
-                        .kbd_tam1);
+                mKeyboard = keyboardFor(R.xml.kbd_tam1);
                 showKeyboardWithAnimation();
                 mKeyboardView.setVisibility(View.VISIBLE);
                 mKeyboardView.setKeyboard(mKeyboard);
             } else if (switchLang.getSelectedItemPosition() == 6) {
                 if (Util.isLangSupported(MainActivity.this, "ਪੰਜਾਬੀ ਦੇ")) {
 
-                    mKeyboard = new Keyboard(MainActivity.this, R.xml
-                            .kbd_punj1);
+                    mKeyboard = keyboardFor(R.xml.kbd_punj1);
                     showKeyboardWithAnimation();
                     mKeyboardView.setVisibility(View.VISIBLE);
                     mKeyboardView.setKeyboard(mKeyboard);
@@ -218,8 +216,7 @@ public class MainActivity extends AppCompatActivity {
 
                     //Reset language selection
                     switchLang.setSelection(0);
-                    mKeyboard = new Keyboard(MainActivity.this, R.xml
-                            .kbd_hin1);
+                    mKeyboard = keyboardFor(R.xml.kbd_hin1);
                     mKeyboardView.setVisibility(View.GONE);
 
                     //Show Default Keyboard
@@ -239,6 +236,22 @@ public class MainActivity extends AppCompatActivity {
             //Show Default Keyboard
             showSystemKeyboard();
         }
+    }
+
+    /**
+     * Building a Keyboard means parsing its XML and allocating every Key in it,
+     * and the layer toggles do that on a keypress with the user waiting. The
+     * layouts never change, so each one is built at most once. Key sizes are
+     * computed from the display width at parse time, but a configuration change
+     * recreates the Activity and with it this cache.
+     */
+    private Keyboard keyboardFor(int xmlResId) {
+        Keyboard keyboard = keyboardCache.get(xmlResId);
+        if (keyboard == null) {
+            keyboard = new Keyboard(MainActivity.this, xmlResId);
+            keyboardCache.put(xmlResId, keyboard);
+        }
+        return keyboard;
     }
 
     /**
@@ -372,42 +385,42 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case -106:
                     displayKeyboardView
-                            .setKeyboard(new Keyboard(mTargetActivity, R.xml.kbd_hin2));
+                            .setKeyboard(keyboardFor(R.xml.kbd_hin2));
                     break;
                 case -107:
                     displayKeyboardView
-                            .setKeyboard(new Keyboard(mTargetActivity, R.xml.kbd_hin1));
+                            .setKeyboard(keyboardFor(R.xml.kbd_hin1));
                     break;
                 case -108:
                     displayKeyboardView
-                            .setKeyboard(new Keyboard(mTargetActivity, R.xml.kbd_guj2));
+                            .setKeyboard(keyboardFor(R.xml.kbd_guj2));
                     break;
                 case -109:
-                    displayKeyboardView.setKeyboard(new Keyboard(mTargetActivity, R.xml.kbd_guj1));
+                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_guj1));
                     break;
                 case -110:
-                    displayKeyboardView.setKeyboard(new Keyboard(mTargetActivity, R.xml.kbd_mar2));
+                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_mar2));
                     break;
                 case -111:
-                    displayKeyboardView.setKeyboard(new Keyboard(mTargetActivity, R.xml.kbd_mar1));
+                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_mar1));
                     break;
                 case -112:
-                    displayKeyboardView.setKeyboard(new Keyboard(mTargetActivity, R.xml.kbd_knd2));
+                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_knd2));
                     break;
                 case -113:
-                    displayKeyboardView.setKeyboard(new Keyboard(mTargetActivity, R.xml.kbd_knd1));
+                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_knd1));
                     break;
                 case -114:
-                    displayKeyboardView.setKeyboard(new Keyboard(mTargetActivity, R.xml.kbd_tam2));
+                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_tam2));
                     break;
                 case -115:
-                    displayKeyboardView.setKeyboard(new Keyboard(mTargetActivity, R.xml.kbd_tam1));
+                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_tam1));
                     break;
                 case -116:
-                    displayKeyboardView.setKeyboard(new Keyboard(mTargetActivity, R.xml.kbd_punj2));
+                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_punj2));
                     break;
                 case -117:
-                    displayKeyboardView.setKeyboard(new Keyboard(mTargetActivity, R.xml.kbd_punj1));
+                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_punj1));
                     break;
                 default:
                     break;
