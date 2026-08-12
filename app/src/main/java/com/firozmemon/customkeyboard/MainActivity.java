@@ -51,9 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private final SparseArray<Keyboard> keyboardCache = new SparseArray<>();
 
     /**
-     * Everything below is indexed by the spinner position, where 0 is the
-     * device's own keyboard and so has no layout of its own. Keep these in step
-     * with R.array.switchLangArr.
+     * Indexed by the spinner position, where 0 is the device's own keyboard and
+     * so has no layout of its own. Keep in step with R.array.switchLangArr.
      */
     private static final int[] LAYOUT_FOR_POSITION = {
             0,
@@ -63,15 +62,6 @@ public class MainActivity extends AppCompatActivity {
             R.xml.kbd_knd1,
             R.xml.kbd_tam1,
             R.xml.kbd_punj1,
-    };
-
-    private static final String[] LANGUAGE_NAME = {
-            null, "Hindi", "Gujarati", "Marathi", "Kannada", "Tamil", "Punjabi",
-    };
-
-    /** Sample text used to check the device can render the script, null if it always can. */
-    private static final String[] SCRIPT_SAMPLE = {
-            null, null, "ગુજરાતી", null, null, null, "ਪੰਜਾਬੀ ਦੇ",
     };
 
     public void hideSoftKeyboard(Activity activity) {
@@ -183,24 +173,6 @@ public class MainActivity extends AppCompatActivity {
         int position = switchLang.getSelectedItemPosition();
 
         if (position <= 0 || position >= LAYOUT_FOR_POSITION.length) {
-            mKeyboardView.setVisibility(View.GONE);
-
-            //Show Default Keyboard
-            showSystemKeyboard();
-            return;
-        }
-
-        /**
-         * Some scripts need a font the device may not carry. Only the entries
-         * with a sample in SCRIPT_SAMPLE have to be probed.
-         */
-        String sample = SCRIPT_SAMPLE[position];
-        if (sample != null && !Util.isLangSupported(MainActivity.this, sample)) {
-            Util.displayAlert(MainActivity.this, getResources().getString(R.string.app_name),
-                    LANGUAGE_NAME[position] + " keyboard is not supported by your device");
-
-            //Reset language selection
-            switchLang.setSelection(0);
             mKeyboardView.setVisibility(View.GONE);
 
             //Show Default Keyboard
