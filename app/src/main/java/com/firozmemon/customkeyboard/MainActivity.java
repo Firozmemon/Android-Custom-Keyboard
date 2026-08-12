@@ -18,6 +18,7 @@ package com.firozmemon.customkeyboard;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Paint;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     private View.OnTouchListener customKeyboardTouchListener;
     private final SparseArray<Keyboard> keyboardCache = new SparseArray<>();
+    private final Paint glyphProbe = new Paint();
 
     /**
      * Indexed by the spinner position, where 0 is the device's own keyboard and
@@ -62,6 +65,25 @@ public class MainActivity extends AppCompatActivity {
             R.xml.kbd_knd1,
             R.xml.kbd_tam1,
             R.xml.kbd_punj1,
+    };
+
+    private static final String[] LANGUAGE_NAME = {
+            null, "Hindi", "Gujarati", "Marathi", "Kannada", "Tamil", "Punjabi",
+    };
+
+    /**
+     * One base letter per script. Deliberately a single character: hasGlyph()
+     * asks whether the whole string maps to one glyph, so a word answers false
+     * even on a device that renders the script perfectly well.
+     */
+    private static final String[] PROBE_CHAR = {
+            null,
+            "क",   // U+0915 Devanagari ka - Hindi
+            "ક",   // U+0A95 Gujarati ka
+            "क",   // U+0915 Devanagari ka - Marathi
+            "ಕ",   // U+0C95 Kannada ka
+            "க",   // U+0B95 Tamil ka
+            "ਕ",   // U+0A15 Gurmukhi ka - Punjabi
     };
 
     public void hideSoftKeyboard(Activity activity) {
@@ -180,6 +202,22 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        /**
+         * Without the font the keys draw as tofu and the keyboard is unusable,
+         * so hand back to the device's own rather than show it.
+         */
+        if (!canRenderScript(position)) {
+            showUnsupportedAlert(LANGUAGE_NAME[position]);
+
+            //Reset language selection
+            switchLang.setSelection(0);
+            mKeyboardView.setVisibility(View.GONE);
+
+            //Show Default Keyboard
+            showSystemKeyboard();
+            return;
+        }
+
         hideSoftKeyboard(MainActivity.this);
         focusForCustomKeyboard();
 
@@ -188,6 +226,25 @@ public class MainActivity extends AppCompatActivity {
         mKeyboardView.setKeyboard(keyboardFor(LAYOUT_FOR_POSITION[position]));
 
         messageEditText.setOnTouchListener(customKeyboardTouchListener);
+    }
+
+    /**
+     * Whether the device can actually draw this script. Paint.hasGlyph() checks
+     * the font directly, so unlike drawing to a bitmap and looking for pixels it
+     * can tell a real letter from the tofu box drawn in its place.
+     */
+    private boolean canRenderScript(int position) {
+        String probe = PROBE_CHAR[position];
+        return probe == null || glyphProbe.hasGlyph(probe);
+    }
+
+    private void showUnsupportedAlert(String language) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle(R.string.app_name)
+                .setMessage(language + " keyboard is not supported by your device")
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     /**
