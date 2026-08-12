@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Layout;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -66,6 +67,27 @@ public class MainActivity extends AppCompatActivity {
             R.xml.kbd_tam1,
             R.xml.kbd_punj1,
     };
+
+    /**
+     * The layer-toggle keys (the shift and १२३ keys) carry these codes, one
+     * pair per language, and each one only has to swap in another layout.
+     */
+    private static final SparseIntArray LAYER_FOR_KEYCODE = new SparseIntArray();
+
+    static {
+        LAYER_FOR_KEYCODE.put(-106, R.xml.kbd_hin2);
+        LAYER_FOR_KEYCODE.put(-107, R.xml.kbd_hin1);
+        LAYER_FOR_KEYCODE.put(-108, R.xml.kbd_guj2);
+        LAYER_FOR_KEYCODE.put(-109, R.xml.kbd_guj1);
+        LAYER_FOR_KEYCODE.put(-110, R.xml.kbd_mar2);
+        LAYER_FOR_KEYCODE.put(-111, R.xml.kbd_mar1);
+        LAYER_FOR_KEYCODE.put(-112, R.xml.kbd_knd2);
+        LAYER_FOR_KEYCODE.put(-113, R.xml.kbd_knd1);
+        LAYER_FOR_KEYCODE.put(-114, R.xml.kbd_tam2);
+        LAYER_FOR_KEYCODE.put(-115, R.xml.kbd_tam1);
+        LAYER_FOR_KEYCODE.put(-116, R.xml.kbd_punj2);
+        LAYER_FOR_KEYCODE.put(-117, R.xml.kbd_punj1);
+    }
 
     private static final String[] LANGUAGE_NAME = {
             null, "Hindi", "Gujarati", "Marathi", "Kannada", "Tamil", "Punjabi",
@@ -400,46 +422,11 @@ public class MainActivity extends AppCompatActivity {
 
                     mTargetActivity.dispatchKeyEvent(event);
                     break;
-                case -106:
-                    displayKeyboardView
-                            .setKeyboard(keyboardFor(R.xml.kbd_hin2));
-                    break;
-                case -107:
-                    displayKeyboardView
-                            .setKeyboard(keyboardFor(R.xml.kbd_hin1));
-                    break;
-                case -108:
-                    displayKeyboardView
-                            .setKeyboard(keyboardFor(R.xml.kbd_guj2));
-                    break;
-                case -109:
-                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_guj1));
-                    break;
-                case -110:
-                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_mar2));
-                    break;
-                case -111:
-                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_mar1));
-                    break;
-                case -112:
-                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_knd2));
-                    break;
-                case -113:
-                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_knd1));
-                    break;
-                case -114:
-                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_tam2));
-                    break;
-                case -115:
-                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_tam1));
-                    break;
-                case -116:
-                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_punj2));
-                    break;
-                case -117:
-                    displayKeyboardView.setKeyboard(keyboardFor(R.xml.kbd_punj1));
-                    break;
                 default:
+                    int layout = LAYER_FOR_KEYCODE.get(primaryCode);
+                    if (layout != 0) {
+                        displayKeyboardView.setKeyboard(keyboardFor(layout));
+                    }
                     break;
             }
         }
