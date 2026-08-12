@@ -39,6 +39,16 @@ android {
         }
     }
 
+    androidResources {
+        /*
+         * AppCompat and Material ship their system strings in ~80 locales,
+         * which is most of resources.arsc. Keep English plus the languages
+         * this keyboard actually types, so users running their phone in one
+         * of those still get localised framework strings.
+         */
+        localeFilters += ["en", "hi", "gu", "mr", "kn", "ta", "pa"]
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
