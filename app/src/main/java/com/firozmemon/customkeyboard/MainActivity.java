@@ -119,6 +119,16 @@ public class MainActivity extends AppCompatActivity {
         if (switchLang.getSelectedItemPosition() != 0) {
             hideSoftKeyboard(MainActivity.this);
 
+            /**
+             * The custom keyboard drives the EditText, so keep the system
+             * keyboard from popping up on focus, but still give the EditText
+             * focus ourselves. Without focus the caret is never drawn and
+             * dispatchKeyEvent() has no target for Enter/Backspace.
+             */
+            messageEditText.setShowSoftInputOnFocus(false);
+            messageEditText.requestFocus();
+            messageEditText.setCursorVisible(true);
+
             if (switchLang.getSelectedItemPosition() == 1) {
                 mKeyboard = new Keyboard(MainActivity.this, R.xml
                         .kbd_hin1);
@@ -142,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                     mKeyboardView.setVisibility(View.GONE);
 
                     //Show Default Keyboard
+                    messageEditText.setShowSoftInputOnFocus(true);
                     InputMethodManager imm =
                             (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(messageEditText, 0);
@@ -184,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
                     mKeyboardView.setVisibility(View.GONE);
 
                     //Show Default Keyboard
+                    messageEditText.setShowSoftInputOnFocus(true);
                     InputMethodManager imm =
                             (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(messageEditText, 0);
@@ -226,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
             mKeyboardView.setVisibility(View.GONE);
 
             //Show Default Keyboard
+            messageEditText.setShowSoftInputOnFocus(true);
             InputMethodManager imm =
                     (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(messageEditText, 0);
