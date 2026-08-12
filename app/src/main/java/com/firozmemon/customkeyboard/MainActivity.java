@@ -55,6 +55,30 @@ public class MainActivity extends AppCompatActivity {
     private View.OnTouchListener customKeyboardTouchListener;
     private final SparseArray<Keyboard> keyboardCache = new SparseArray<>();
 
+    /**
+     * Everything below is indexed by the spinner position, where 0 is the
+     * device's own keyboard and so has no layout of its own. Keep these in step
+     * with R.array.switchLangArr.
+     */
+    private static final int[] LAYOUT_FOR_POSITION = {
+            0,
+            R.xml.kbd_hin1,
+            R.xml.kbd_guj1,
+            R.xml.kbd_mar1,
+            R.xml.kbd_knd1,
+            R.xml.kbd_tam1,
+            R.xml.kbd_punj1,
+    };
+
+    private static final String[] LANGUAGE_NAME = {
+            null, "Hindi", "Gujarati", "Marathi", "Kannada", "Tamil", "Punjabi",
+    };
+
+    /** Sample text used to check the device can render the script, null if it always can. */
+    private static final String[] SCRIPT_SAMPLE = {
+            null, null, "ગુજરાતી", null, null, null, "ਪੰਜਾਬੀ ਦੇ",
+    };
+
     public void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager =
                 (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -70,6 +94,13 @@ public class MainActivity extends AppCompatActivity {
         messageEditText = findViewById(R.id.messageEditText);
         switchLang = findViewById(R.id.switchLang);
         mKeyboardView = findViewById(R.id.keyboardView);
+
+        // Neither of these ever changes, so they do not belong in selectKeyboard()
+        mKeyboardView.setPreviewEnabled(false);   // no preview balloons
+        mKeyboardView.setOnKeyboardActionListener(new BasicOnKeyboardActionListener(
+                MainActivity.this,
+                messageEditText,
+                mKeyboardView));
 
         langAdapter = ArrayAdapter.createFromResource(this, R.array.switchLangArr, android.R.layout.simple_spinner_item);
         langAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -155,88 +186,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void selectKeyboard() {
+        int position = switchLang.getSelectedItemPosition();
 
-        // Do not show the preview balloons
-        mKeyboardView.setPreviewEnabled(false);
-
-        if (switchLang.getSelectedItemPosition() != 0) {
-            hideSoftKeyboard(MainActivity.this);
-
-            focusForCustomKeyboard();
-
-            if (switchLang.getSelectedItemPosition() == 1) {
-                mKeyboard = keyboardFor(R.xml.kbd_hin1);
-                showKeyboardWithAnimation();
-                mKeyboardView.setVisibility(View.VISIBLE);
-                mKeyboardView.setKeyboard(mKeyboard);
-
-            } else if (switchLang.getSelectedItemPosition() == 2) {
-                if (Util.isLangSupported(MainActivity.this, "ગુજરાતી")) {
-                    mKeyboard = keyboardFor(R.xml.kbd_guj1);
-                    showKeyboardWithAnimation();
-                    mKeyboardView.setVisibility(View.VISIBLE);
-                    mKeyboardView.setKeyboard(mKeyboard);
-                } else {
-                    Util.displayAlert(MainActivity.this, getResources().getString(R.string.app_name), "Gujarati keyboard is not supported "
-                            + "by your device");
-                    //Reset language selection
-                    switchLang.setSelection(0);
-                    mKeyboard = keyboardFor(R.xml.kbd_hin1);
-                    mKeyboardView.setVisibility(View.GONE);
-
-                    //Show Default Keyboard
-                    showSystemKeyboard();
-                }
-            } else if (switchLang.getSelectedItemPosition() == 3) {
-                mKeyboard =
-                        keyboardFor(R.xml.kbd_mar1);
-                showKeyboardWithAnimation();
-                mKeyboardView.setVisibility(View.VISIBLE);
-                mKeyboardView.setKeyboard(mKeyboard);
-            } else if (switchLang.getSelectedItemPosition() == 4) {
-                mKeyboard =
-                        keyboardFor(R.xml.kbd_knd1);
-                showKeyboardWithAnimation();
-                mKeyboardView.setVisibility(View.VISIBLE);
-                mKeyboardView.setKeyboard(mKeyboard);
-            } else if (switchLang.getSelectedItemPosition() == 5) {
-                mKeyboard = keyboardFor(R.xml.kbd_tam1);
-                showKeyboardWithAnimation();
-                mKeyboardView.setVisibility(View.VISIBLE);
-                mKeyboardView.setKeyboard(mKeyboard);
-            } else if (switchLang.getSelectedItemPosition() == 6) {
-                if (Util.isLangSupported(MainActivity.this, "ਪੰਜਾਬੀ ਦੇ")) {
-
-                    mKeyboard = keyboardFor(R.xml.kbd_punj1);
-                    showKeyboardWithAnimation();
-                    mKeyboardView.setVisibility(View.VISIBLE);
-                    mKeyboardView.setKeyboard(mKeyboard);
-                } else {
-                    Util.displayAlert(MainActivity.this, getResources().getString(R.string.app_name), "Punjabi keyboard is not supported "
-                            + "by your device");
-
-                    //Reset language selection
-                    switchLang.setSelection(0);
-                    mKeyboard = keyboardFor(R.xml.kbd_hin1);
-                    mKeyboardView.setVisibility(View.GONE);
-
-                    //Show Default Keyboard
-                    showSystemKeyboard();
-                }
-            }
-
-            mKeyboardView.setOnKeyboardActionListener(new BasicOnKeyboardActionListener(
-                    MainActivity.this,
-                    messageEditText,
-                    mKeyboardView));
-
-            messageEditText.setOnTouchListener(customKeyboardTouchListener);
-        } else {
+        if (position <= 0 || position >= LAYOUT_FOR_POSITION.length) {
             mKeyboardView.setVisibility(View.GONE);
 
             //Show Default Keyboard
             showSystemKeyboard();
+            return;
         }
+
+        /**
+         * Some scripts need a font the device may not carry. Only the entries
+         * with a sample in SCRIPT_SAMPLE have to be probed.
+         */
+        String sample = SCRIPT_SAMPLE[position];
+        if (sample != null && !Util.isLangSupported(MainActivity.this, sample)) {
+            Util.displayAlert(MainActivity.this, getResources().getString(R.string.app_name),
+                    LANGUAGE_NAME[position] + " keyboard is not supported by your device");
+
+            //Reset language selection
+            switchLang.setSelection(0);
+            mKeyboardView.setVisibility(View.GONE);
+
+            //Show Default Keyboard
+            showSystemKeyboard();
+            return;
+        }
+
+        hideSoftKeyboard(MainActivity.this);
+        focusForCustomKeyboard();
+
+        mKeyboard = keyboardFor(LAYOUT_FOR_POSITION[position]);
+        showKeyboardWithAnimation();
+        mKeyboardView.setVisibility(View.VISIBLE);
+        mKeyboardView.setKeyboard(mKeyboard);
+
+        messageEditText.setOnTouchListener(customKeyboardTouchListener);
     }
 
     /**
