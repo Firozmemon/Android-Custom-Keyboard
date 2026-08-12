@@ -20,10 +20,8 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Paint
 import android.inputmethodservice.Keyboard
-import android.inputmethodservice.KeyboardView
 import android.os.Bundle
 import android.util.SparseArray
-import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
@@ -65,7 +63,9 @@ class MainActivity : AppCompatActivity() {
 
         // Neither of these ever changes, so they do not belong in selectKeyboard()
         mKeyboardView.isPreviewEnabled = false   // no preview balloons
-        mKeyboardView.setOnKeyboardActionListener(BasicOnKeyboardActionListener())
+        mKeyboardView.setOnKeyboardActionListener(
+            BasicOnKeyboardActionListener(this, messageEditText, mKeyboardView, ::keyboardFor)
+        )
 
         val langAdapter = ArrayAdapter.createFromResource(
             this, R.array.switchLangArr, android.R.layout.simple_spinner_item
@@ -250,78 +250,6 @@ class MainActivity : AppCompatActivity() {
         if (mKeyboardView.visibility == View.GONE) {
             val animation = AnimationUtils.loadAnimation(this, R.anim.slide_from_bottom)
             mKeyboardView.showWithAnimation(animation)
-        }
-    }
-
-    inner class BasicOnKeyboardActionListener : KeyboardView.OnKeyboardActionListener {
-
-        override fun swipeUp() {
-            /* no-op */
-        }
-
-        override fun swipeRight() {
-            /* no-op */
-        }
-
-        override fun swipeLeft() {
-            /* no-op */
-        }
-
-        override fun swipeDown() {
-            /* no-op */
-        }
-
-        override fun onText(text: CharSequence) {
-            /*
-             * Editable.replace() edits in place. Rebuilding the message as a
-             * String and handing it back through setText() copied the whole
-             * thing twice per keystroke and discarded the Editable, and the
-             * old caret arithmetic assumed every key emits one character.
-             */
-            val content = messageEditText.text
-            var start = messageEditText.selectionStart
-            var end = messageEditText.selectionEnd
-
-            if (start < 0 || end < 0) {         // nothing focused yet, append
-                start = content.length
-                end = start
-            } else if (start > end) {           // selected right to left
-                val swap = start
-                start = end
-                end = swap
-            }
-
-            content.replace(start, end, text)
-            messageEditText.setSelection(start + text.length)
-        }
-
-        override fun onRelease(primaryCode: Int) {
-            /* no-op */
-        }
-
-        override fun onPress(primaryCode: Int) {
-            /* no-op */
-        }
-
-        override fun onKey(primaryCode: Int, keyCodes: IntArray?) {
-            when (primaryCode) {
-                66, 67 -> {
-                    val eventTime = System.currentTimeMillis()
-                    val event = KeyEvent(
-                        eventTime, eventTime, KeyEvent.ACTION_DOWN, primaryCode, 0, 0, 0, 0,
-                        KeyEvent.FLAG_SOFT_KEYBOARD or KeyEvent.FLAG_KEEP_TOUCH_MODE
-                    )
-
-                    this@MainActivity.dispatchKeyEvent(event)
-                }
-
-                else -> {
-                    val layout = LAYER_FOR_KEYCODE.get(primaryCode)
-                    if (layout != 0) {
-                        mKeyboardView.keyboard = keyboardFor(layout)
-                    }
-                }
-            }
         }
     }
 }
