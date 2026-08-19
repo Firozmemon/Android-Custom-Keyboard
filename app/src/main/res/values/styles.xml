@@ -16,12 +16,12 @@
 
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
+    <!--
+      ~ Only the window behind the composition, so all it has to get right is
+      ~ the background painted before the first frame. Colours live in
+      ~ Theme.kt now, and the platform parent is what lets the app drop
+      ~ AppCompat entirely.
+      -->
+    <style name="AppTheme" parent="@android:style/Theme.Material.Light.NoActionBar" />
 
 </resources>

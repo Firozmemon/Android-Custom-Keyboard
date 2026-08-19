@@ -16,11 +16,18 @@
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
     namespace = "com.firozmemon.customkeyboard"
-    compileSdk = 36
+
+    /*
+     * Compose 1.12 asks to be compiled against 37. That only widens the APIs
+     * available at build time; targetSdk below is what opts the app in to new
+     * runtime behaviour, and it stays where it was.
+     */
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.firozmemon.customkeyboard"
@@ -29,6 +36,10 @@ android {
         versionCode = 2
         versionName = "1.0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        compose = true
     }
 
     buildTypes {
@@ -42,9 +53,9 @@ android {
     packaging {
         resources {
             /*
-             * Kotlin runtime metadata arrives from the AndroidX modules that
-             * are written in Kotlin. Nothing here is Kotlin and nothing reads
-             * it at runtime, so it is dead weight in the APK.
+             * Kotlin module metadata and coroutine debug probes. Nothing reads
+             * either at runtime - no reflection over Kotlin classes here - so
+             * they are dead weight in the APK.
              */
             excludes += ["kotlin/**", "META-INF/*.version", "DebugProbesKt.bin"]
         }
@@ -52,10 +63,9 @@ android {
 
     androidResources {
         /*
-         * AppCompat and Material ship their system strings in ~80 locales,
-         * which is most of resources.arsc. Keep English plus the languages
-         * this keyboard actually types, so users running their phone in one
-         * of those still get localised framework strings.
+         * The AndroidX modules ship their system strings in ~80 locales. Keep
+         * English plus the languages this keyboard actually types, so users
+         * running their phone in one of those still get localised strings.
          */
         localeFilters += ["en", "hi", "gu", "mr", "kn", "ta", "pa"]
     }
@@ -73,10 +83,16 @@ java {
 }
 
 dependencies {
-    implementation libs.androidx.appcompat
-    implementation libs.material
+    implementation platform(libs.androidx.compose.bom)
+    implementation libs.androidx.activity.compose
+    implementation libs.androidx.material3
+    implementation libs.androidx.ui.tooling.preview
+    debugImplementation libs.androidx.ui.tooling
 
     testImplementation libs.junit
+
+    androidTestImplementation platform(libs.androidx.compose.bom)
     androidTestImplementation libs.androidx.junit
-    androidTestImplementation libs.androidx.espresso.core
+    androidTestImplementation libs.androidx.ui.test.junit4
+    debugImplementation libs.androidx.ui.test.manifest
 }

@@ -1,6 +1,6 @@
 # Android-Custom-Keyboard
 
-This is a simple example of creating In-App Custom KeyboardView for Multi-Lingual Keyboards in Android.
+This is a simple example of creating an In-App Custom Keyboard for Multi-Lingual Keyboards in Android, written in Jetpack Compose.
 
 I have referred sample project available on github at: https://github.com/rciovati/Android-KeyboardView-Example
 

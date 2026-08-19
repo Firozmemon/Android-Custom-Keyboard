@@ -23,8 +23,14 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <!--
+          ~ adjustResize is what turns the IME into a window inset the
+          ~ composition can see, so WindowInsets.ime moves the content while
+          ~ the system keyboard is up.
+          -->
         <activity android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
