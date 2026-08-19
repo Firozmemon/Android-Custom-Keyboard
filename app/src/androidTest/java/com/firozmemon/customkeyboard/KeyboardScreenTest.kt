@@ -73,6 +73,17 @@ class KeyboardScreenTest {
             .text
 
     @Test
+    fun theBarNamesTheApp() {
+        start()
+
+        val name = InstrumentationRegistry.getInstrumentation()
+            .targetContext.getString(R.string.app_name)
+
+        compose.onNodeWithTag(TOP_BAR_TAG).assertIsDisplayed()
+        compose.onNodeWithText(name).assertIsDisplayed()
+    }
+
+    @Test
     fun theKeyboardStaysAwayUntilALanguageIsPicked() {
         start()
 

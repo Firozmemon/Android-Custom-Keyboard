@@ -29,8 +29,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.AlertDialog
@@ -38,12 +36,13 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -68,11 +67,12 @@ import kotlinx.coroutines.awaitCancellation
 /** Menu position of the device's own keyboard, which has no [Language]. */
 private const val DEFAULT_KEYBOARD = 0
 
+internal const val TOP_BAR_TAG = "topBar"
 internal const val MESSAGE_FIELD_TAG = "messageField"
 internal const val LANGUAGE_PICKER_TAG = "languagePicker"
 
 /**
- * The message field, the language menu, and the keyboard itself.
+ * The title bar, the message field, the language menu, and the keyboard.
  *
  * Two things the View version had to arrange by hand are gone. It turned the
  * system keyboard off with showSoftInputOnFocus and had to put the caret where
@@ -105,90 +105,97 @@ internal fun KeyboardScreen(modifier: Modifier = Modifier) {
         }
     }
 
-    Column(modifier.fillMaxSize().imePadding()) {
-        Column(
-            Modifier
-                .weight(1f)
-                .windowInsetsPadding(WindowInsets.statusBars)
-                .padding(horizontal = 16.dp),
-        ) {
-            /*
-             * Turns the system IME off at the source while a language is
-             * selected. The field goes on running its own gestures, so taps
-             * still move the caret and drags still select - it is only the
-             * request for a keyboard that is dropped.
-             *
-             * KeyboardOptions.showKeyboardOnFocus is not enough on its own:
-             * it covers the focus the field gains, and a tap on a field that
-             * already has focus asks for the IME in its own right.
-             */
-            SuppressSystemKeyboard(while_ = language != null) {
-                OutlinedTextField(
-                    state = message,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 15.dp)
-                        .focusRequester(messageFocus)
-                        .testTag(MESSAGE_FIELD_TAG),
-                    label = { Text(stringResource(R.string.compose_message_hint)) },
-                    lineLimits = TextFieldLineLimits.MultiLine(
-                        minHeightInLines = 5,
-                        maxHeightInLines = 5,
-                    ),
-                )
-            }
+    Scaffold(
+        modifier = modifier.fillMaxSize().imePadding(),
+        topBar = { AppTitleBar() },
+        /*
+         * The bar takes the status bar and the keyboard puts the navigation
+         * bar back under its own surface, so there is no inset left for the
+         * scaffold to hand out - and were it to hand one out anyway, the keys
+         * would end up sitting on a stripe of background.
+         */
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+    ) { barHeight ->
+        Column(Modifier.fillMaxSize().padding(barHeight)) {
+            Column(Modifier.weight(1f).padding(horizontal = 16.dp)) {
+                /*
+                 * Turns the system IME off at the source while a language is
+                 * selected. The field goes on running its own gestures, so taps
+                 * still move the caret and drags still select - it is only the
+                 * request for a keyboard that is dropped.
+                 *
+                 * KeyboardOptions.showKeyboardOnFocus is not enough on its own:
+                 * it covers the focus the field gains, and a tap on a field that
+                 * already has focus asks for the IME in its own right.
+                 */
+                SuppressSystemKeyboard(while_ = language != null) {
+                    OutlinedTextField(
+                        state = message,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 15.dp)
+                            .focusRequester(messageFocus)
+                            .testTag(MESSAGE_FIELD_TAG),
+                        label = { Text(stringResource(R.string.compose_message_hint)) },
+                        lineLimits = TextFieldLineLimits.MultiLine(
+                            minHeightInLines = 5,
+                            maxHeightInLines = 5,
+                        ),
+                    )
+                }
 
-            /*
-             * The View layout put a TextView above a bare Spinner to name it.
-             * The picker carries its own floating label, so that caption would
-             * only say the same thing twice.
-             */
-            LanguagePicker(
-                selected = selected,
-                onSelect = { position ->
-                    val picked = LANGUAGES.getOrNull(position - 1)
+                /*
+                 * The View layout put a TextView above a bare Spinner to name it.
+                 * The picker carries its own floating label, so that caption would
+                 * only say the same thing twice.
+                 */
+                LanguagePicker(
+                    selected = selected,
+                    onSelect = { position ->
+                        val picked = LANGUAGES.getOrNull(position - 1)
 
-                    /*
-                     * Without the font the keys draw as tofu and the keyboard
-                     * is unusable, so hand back to the device's own rather
-                     * than show it.
-                     */
-                    if (picked != null && !glyphProbe.hasGlyph(picked.probeChar)) {
-                        unsupported = picked.name
-                        selected = DEFAULT_KEYBOARD
-                    } else {
-                        selected = position
-                        showingAlt = false
-                    }
-                },
-                modifier = Modifier.padding(top = 16.dp),
-            )
-        }
-
-        AnimatedVisibility(
-            visible = language != null,
-            enter = slideInVertically(tween(ANIMATION_MS)) { it } + fadeIn(tween(ANIMATION_MS)),
-            exit = slideOutVertically(tween(ANIMATION_MS)) { it } + fadeOut(tween(ANIMATION_MS)),
-        ) {
-            /*
-             * Held so the keys stay on screen while the exit animation runs,
-             * rather than blanking the moment the selection clears.
-             */
-            val showing = remember(language, showingAlt) {
-                language?.let { if (showingAlt) it.alt else it.main }
-            }
-
-            if (showing != null) {
-                CustomKeyboard(
-                    layer = showing,
-                    onKey = { key ->
-                        if (key.action == KeyAction.ToggleLayer) {
-                            showingAlt = !showingAlt
+                        /*
+                         * Without the font the keys draw as tofu and the keyboard
+                         * is unusable, so hand back to the device's own rather
+                         * than show it.
+                         */
+                        if (picked != null && !glyphProbe.hasGlyph(picked.probeChar)) {
+                            unsupported = picked.name
+                            selected = DEFAULT_KEYBOARD
                         } else {
-                            message.press(key)
+                            selected = position
+                            showingAlt = false
                         }
                     },
+                    modifier = Modifier.padding(top = 16.dp),
                 )
+            }
+
+            AnimatedVisibility(
+                visible = language != null,
+                enter = slideInVertically(tween(ANIMATION_MS)) { it } + fadeIn(tween(ANIMATION_MS)),
+                exit = slideOutVertically(tween(ANIMATION_MS)) { it } + fadeOut(tween(ANIMATION_MS)),
+            ) {
+                /*
+                 * Held so the keys stay on screen while the exit animation runs,
+                 * rather than blanking the moment the selection clears.
+                 */
+                val showing = remember(language, showingAlt) {
+                    language?.let { if (showingAlt) it.alt else it.main }
+                }
+
+                if (showing != null) {
+                    CustomKeyboard(
+                        layer = showing,
+                        onKey = { key ->
+                            if (key.action == KeyAction.ToggleLayer) {
+                                showingAlt = !showingAlt
+                            } else {
+                                message.press(key)
+                            }
+                        },
+                    )
+                }
             }
         }
     }
@@ -210,6 +217,24 @@ internal fun KeyboardScreen(modifier: Modifier = Modifier) {
             ),
         )
     }
+}
+
+/**
+ * The bar the View app got for free from Theme.MaterialComponents.DarkActionBar,
+ * and lost with it: a NoActionBar window draws only what it is given, and the
+ * activity label went nowhere the user could see it.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AppTitleBar() {
+    TopAppBar(
+        title = { Text(stringResource(R.string.app_name)) },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = TopBarContainer,
+            titleContentColor = TopBarContent,
+        ),
+        modifier = Modifier.testTag(TOP_BAR_TAG),
+    )
 }
 
 /** Matches slide_from_bottom.xml, which translated and faded over 200ms. */
@@ -280,9 +305,6 @@ private fun LanguagePicker(
 /** Wraps the screen so previews and tests get the app's colours. */
 @Composable
 internal fun CustomKeyboardApp() {
-    CustomKeyboardTheme {
-        Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            KeyboardScreen()
-        }
-    }
+    // The scaffold paints the background the Surface here used to.
+    CustomKeyboardTheme { KeyboardScreen() }
 }

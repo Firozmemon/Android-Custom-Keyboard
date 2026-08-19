@@ -16,8 +16,10 @@
 
 package com.firozmemon.customkeyboard
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 
@@ -28,7 +30,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        /*
+         * The title bar draws behind the status bar and keeps its indigo in
+         * either theme, so the icons on top of it want to be light in either
+         * theme too - which is the one thing auto() will not do, deciding as
+         * it does from the system's own light or dark.
+         */
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
         setContent { CustomKeyboardApp() }
     }
 }

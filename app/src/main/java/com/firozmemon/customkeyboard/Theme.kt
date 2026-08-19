@@ -35,6 +35,16 @@ private val LightColors = lightColorScheme(primary = Indigo, secondary = DeepBlu
 private val DarkColors = darkColorScheme(primary = IndigoLight, secondary = BlueLight)
 
 /**
+ * The action bar's own pair, because no slot in the M3 schemes holds it. The
+ * View theme put white on colorPrimary and could, since the window never went
+ * dark; primary here has to stay legible against a dark surface too, which is
+ * why the dark scheme lightens it. So the bar keeps the original indigo
+ * itself, and reads the same in either theme.
+ */
+internal val TopBarContainer = Indigo
+internal val TopBarContent = Color.White
+
+/**
  * The app was light-only, because that is all Theme.MaterialComponents.Light
  * offered. Following the system costs one branch here.
  */
