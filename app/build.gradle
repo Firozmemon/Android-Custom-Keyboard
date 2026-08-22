@@ -19,6 +19,19 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
+/*
+ * Release signing is read from keystore.properties, which is gitignored: the
+ * keystore is the app's identity on Play, so neither it nor its passwords
+ * belong in the repo. Absent the file - a fresh clone, or CI without the
+ * secret - the release build stays unsigned rather than failing, so debug
+ * work and the test tasks still run.
+ */
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace = "com.firozmemon.customkeyboard"
 
@@ -42,8 +55,26 @@ android {
         compose = true
     }
 
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                storeFile = rootProject.file(keystoreProperties['storeFile'])
+                storePassword = keystoreProperties['storePassword']
+                keyAlias = keystoreProperties['keyAlias']
+                // The key password defaults to the store password, which is
+                // how this keystore was made - one password for both.
+                keyPassword = keystoreProperties['keyPassword'] ?: keystoreProperties['storePassword']
+            }
+        }
+    }
+
     buildTypes {
         release {
+            // Only sign when the secrets are present; otherwise leave it
+            // unsigned rather than pointing at an empty config.
+            if (keystorePropertiesFile.exists()) {
+                signingConfig = signingConfigs.release
+            }
             minifyEnabled = true
             shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

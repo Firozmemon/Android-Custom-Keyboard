@@ -8,3 +8,12 @@
 *.iml
 .idea
 /app/build
+
+# Signing — never commit the keystore or its passwords
+keystore.properties
+*.keystore
+*.jks
+
+# Built release APKs — ship these via GitHub Releases, not git history.
+# The already-tracked apks/CustomKeyboard_v1.0.apk is unaffected.
+apks/*.apk
