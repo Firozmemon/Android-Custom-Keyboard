@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.firozmemon.customkeyboard
+package com.firozmemon.customkeyboard.ui.keyboard
 
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertIsDisplayed
@@ -26,6 +26,8 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.firozmemon.customkeyboard.R
+import com.firozmemon.customkeyboard.ui.CustomKeyboardApp
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

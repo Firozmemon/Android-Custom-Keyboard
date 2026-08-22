@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package com.firozmemon.customkeyboard
+package com.firozmemon.customkeyboard.ui.keyboard
 
 import androidx.compose.foundation.text.input.TextFieldBuffer
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.delete
 import androidx.compose.ui.text.TextRange
+import com.firozmemon.customkeyboard.model.Key
+import com.firozmemon.customkeyboard.model.KeyAction
 
 /**
  * Applies a key press to the message.

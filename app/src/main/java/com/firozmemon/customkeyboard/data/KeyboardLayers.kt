@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-package com.firozmemon.customkeyboard
+package com.firozmemon.customkeyboard.data
+
+import com.firozmemon.customkeyboard.model.Key
+import com.firozmemon.customkeyboard.model.KeyAction
+import com.firozmemon.customkeyboard.model.KeyboardLayer
+import com.firozmemon.customkeyboard.model.WIDE_KEY_WIDTH
 
 /**
  * The key grids, one pair of layers per language.

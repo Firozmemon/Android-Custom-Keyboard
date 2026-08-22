@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.firozmemon.customkeyboard
+package com.firozmemon.customkeyboard.model
 
 import androidx.compose.runtime.Immutable
 
@@ -33,14 +33,4 @@ internal data class Language(
     val main: KeyboardLayer,
     val alt: KeyboardLayer,
     val probeChar: String,
-)
-
-/** One row per entry in the language menu after Default, in menu order. */
-internal val LANGUAGES = listOf(
-    Language("Hindi", HINDI_MAIN, HINDI_ALT, "क"),        // U+0915 Devanagari ka
-    Language("Gujarati", GUJARATI_MAIN, GUJARATI_ALT, "ક"),  // U+0A95 Gujarati ka
-    Language("Marathi", MARATHI_MAIN, MARATHI_ALT, "क"),    // U+0915 Devanagari ka
-    Language("Kannada", KANNADA_MAIN, KANNADA_ALT, "ಕ"),    // U+0C95 Kannada ka
-    Language("Tamil", TAMIL_MAIN, TAMIL_ALT, "க"),          // U+0B95 Tamil ka
-    Language("Punjabi", PUNJABI_MAIN, PUNJABI_ALT, "ਕ"),    // U+0A15 Gurmukhi ka
 )

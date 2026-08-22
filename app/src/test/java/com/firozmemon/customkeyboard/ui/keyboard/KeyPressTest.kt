@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package com.firozmemon.customkeyboard
+package com.firozmemon.customkeyboard.ui.keyboard
 
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.ui.text.TextRange
+import com.firozmemon.customkeyboard.model.Key
+import com.firozmemon.customkeyboard.model.KeyAction
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

@@ -14,39 +14,19 @@
  * limitations under the License.
  */
 
-package com.firozmemon.customkeyboard
+package com.firozmemon.customkeyboard.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.firozmemon.customkeyboard.ui.keyboard.KeyboardScreen
+import com.firozmemon.customkeyboard.ui.theme.CustomKeyboardTheme
 
-/**
- * The grids were XML the IDE could not draw, so editing a layout meant
- * installing the app to see it. Now they render here.
- */
-@Preview(name = "Hindi letters", showBackground = true)
+/** Wraps the screen so previews and tests get the app's colours. */
 @Composable
-private fun HindiLettersPreview() = CustomKeyboardTheme {
-    CustomKeyboard(layer = HINDI_MAIN, onKey = {})
-}
-
-@Preview(name = "Hindi digits", showBackground = true)
-@Composable
-private fun HindiDigitsPreview() = CustomKeyboardTheme {
-    CustomKeyboard(layer = HINDI_ALT, onKey = {})
-}
-
-@Preview(name = "Tamil letters", showBackground = true)
-@Composable
-private fun TamilLettersPreview() = CustomKeyboardTheme {
-    CustomKeyboard(layer = TAMIL_MAIN, onKey = {})
-}
-
-/** The one language whose keys need the extra room, worth an eye on. */
-@Preview(name = "Tamil digits", showBackground = true)
-@Composable
-private fun TamilDigitsPreview() = CustomKeyboardTheme {
-    CustomKeyboard(layer = TAMIL_ALT, onKey = {})
+internal fun CustomKeyboardApp() {
+    // The scaffold paints the background the Surface here used to.
+    CustomKeyboardTheme { KeyboardScreen() }
 }
 
 @Preview(name = "Screen", showBackground = true, heightDp = 720)

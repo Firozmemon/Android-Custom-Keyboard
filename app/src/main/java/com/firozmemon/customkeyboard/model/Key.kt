@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.firozmemon.customkeyboard
+package com.firozmemon.customkeyboard.model
 
 import androidx.compose.runtime.Immutable
 
@@ -51,12 +51,3 @@ internal data class Key(
     /** Held down, the key keeps firing. True for space and backspace. */
     val repeatable: Boolean = false,
 )
-
-/**
- * One grid of keys. A language has two: the letters it opens on, and the
- * digits and marks behind the shift key.
- */
-@Immutable
-internal class KeyboardLayer(vararg rows: List<Key>) {
-    val rows: List<List<Key>> = rows.toList()
-}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.firozmemon.customkeyboard
+package com.firozmemon.customkeyboard.ui.keyboard
 
 import android.graphics.Paint
 import androidx.compose.animation.AnimatedVisibility
@@ -62,6 +62,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import com.firozmemon.customkeyboard.R
+import com.firozmemon.customkeyboard.data.LANGUAGES
+import com.firozmemon.customkeyboard.model.KeyAction
+import com.firozmemon.customkeyboard.model.Language
+import com.firozmemon.customkeyboard.ui.theme.TopBarContainer
+import com.firozmemon.customkeyboard.ui.theme.TopBarContent
 import kotlinx.coroutines.awaitCancellation
 
 /** Menu position of the device's own keyboard, which has no [Language]. */
@@ -300,11 +306,4 @@ private fun LanguagePicker(
             }
         }
     }
-}
-
-/** Wraps the screen so previews and tests get the app's colours. */
-@Composable
-internal fun CustomKeyboardApp() {
-    // The scaffold paints the background the Surface here used to.
-    CustomKeyboardTheme { KeyboardScreen() }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.firozmemon.customkeyboard
+package com.firozmemon.customkeyboard.ui.keyboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -52,6 +52,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.firozmemon.customkeyboard.R
+import com.firozmemon.customkeyboard.model.Key
+import com.firozmemon.customkeyboard.model.KeyAction
+import com.firozmemon.customkeyboard.model.KeyboardLayer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

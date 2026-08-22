@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package com.firozmemon.customkeyboard
+package com.firozmemon.customkeyboard.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 /** The indigo and accent the app has always used, formerly in colors.xml. */
-private val Indigo = Color(0xFF3F51B5)
-private val DeepBlue = Color(0xFF000081)
+internal val Indigo = Color(0xFF3F51B5)
+internal val DeepBlue = Color(0xFF000081)
 
 /** Light enough to read against a dark surface, which the originals are not. */
-private val IndigoLight = Color(0xFF9FA8DA)
-private val BlueLight = Color(0xFFB0C4FF)
-
-private val LightColors = lightColorScheme(primary = Indigo, secondary = DeepBlue)
-private val DarkColors = darkColorScheme(primary = IndigoLight, secondary = BlueLight)
+internal val IndigoLight = Color(0xFF9FA8DA)
+internal val BlueLight = Color(0xFFB0C4FF)
 
 /**
  * The action bar's own pair, because no slot in the M3 schemes holds it. The
@@ -43,18 +35,3 @@ private val DarkColors = darkColorScheme(primary = IndigoLight, secondary = Blue
  */
 internal val TopBarContainer = Indigo
 internal val TopBarContent = Color.White
-
-/**
- * The app was light-only, because that is all Theme.MaterialComponents.Light
- * offered. Following the system costs one branch here.
- */
-@Composable
-internal fun CustomKeyboardTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit,
-) {
-    MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else LightColors,
-        content = content,
-    )
-}

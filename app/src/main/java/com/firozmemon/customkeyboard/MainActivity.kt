@@ -22,6 +22,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.firozmemon.customkeyboard.ui.CustomKeyboardApp
 
 /**
  * Created by firoz
