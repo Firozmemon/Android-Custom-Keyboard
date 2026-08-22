@@ -19,13 +19,18 @@
     <string name="compose_message_hint">Compose your message</string>
     <string name="select_keyboard">Select Keyboard</string>
 
-    <string-array name="switchLangArr">
-        <item>Default</item>
-        <item>Hindi</item>
-        <item>Gujarati</item>
-        <item>Marathi</item>
-        <item>Kannada</item>
-        <item>Tamil</item>
-        <item>Punjabi</item>
-    </string-array>
+    <!--
+      ~ The device's own keyboard. The languages themselves are named in
+      ~ LANGUAGES, which is also what orders the menu, so the two cannot fall
+      ~ out of step the way this string array and that list once could.
+      -->
+    <string name="default_keyboard">Default</string>
+
+    <string name="unsupported_keyboard">%1$s keyboard is not supported by your device</string>
+
+    <!-- Spoken for keys whose label is a symbol, or in one case a blank. -->
+    <string name="key_space">Space</string>
+    <string name="key_backspace">Backspace</string>
+    <string name="key_enter">Enter</string>
+    <string name="key_switch_layer">Switch keys</string>
 </resources>
